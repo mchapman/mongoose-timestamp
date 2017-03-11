@@ -19,7 +19,7 @@ var OptionsTestSchema = new Schema({
     email: String
 });
 
-mongoose.plugin(timestamps, {updatedElement:{someOption: "Hello World"}});
+mongoose.plugin(timestamps, {updatedAt:{someOption: "Hello World"}});
 
 var OptionsTest;
 try {OptionsTest = mongoose.model('OptionsTest')} catch(e) {OptionsTest = mongoose.model('OptionsTest', OptionsTestSchema)}
@@ -29,7 +29,7 @@ after(function(done) {
     done();
 });
 
-describe('timestamps', function() {
+describe('pass options', function() {
 
     it('should use updatedElement', function(done) {
         OptionsTest.schema.paths.updatedAt.options.someOption.should.equal('Hello World');
