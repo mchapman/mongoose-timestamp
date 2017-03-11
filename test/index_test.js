@@ -9,29 +9,19 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var timestamps = require('../');
 
-mongoose.connect('mongodb://localhost/mongoose_timestamps')
-mongoose.connection.on('error', function (err) {
-  console.error('MongoDB error: ' + err.message);
-  console.error('Make sure a mongoDB server is running and accessible by this application')
+mongoose = mongoose.createConnection('mongodb://localhost/mongoose_timestamps')
+mongoose.on('error', function (err) {
+        console.error('MongoDB error: ' + err.message);
+        console.error('Make sure a mongoDB server is running and accessible by this application')
 });
 
 var TimeCopSchema = new Schema({
-  email: String
+    email: String,
+    nemesis: String
 });
-
-mongoose.plugin(timestamps);
-
-var TimeCopSchema = new Schema({
-  email: String
-});
-
+TimeCopSchema.plugin(timestamps);
 var TimeCop
 try {TimeCop = mongoose.model('TimeCop')} catch(e) {TimeCop = mongoose.model('TimeCop', TimeCopSchema)};
-
-after(function(done) {
-  mongoose.connection.db.dropDatabase()
-  done();
-})
 
 describe('timestamps', function() {
   it('should be set to the same value on creation', function(done) {
@@ -53,4 +43,8 @@ describe('timestamps', function() {
       }, 1000);
     });
   })
+
+  after(function() {
+      mongoose.close();
+  });
 })
