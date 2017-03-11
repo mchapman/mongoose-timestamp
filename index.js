@@ -44,6 +44,8 @@ function timestampsPlugin(schema, options) {
     if (typeof options === 'object') {
         if (options === null) {
             options = {createdAt: '_id'};
+        } else if (!options.createdAt) {
+            options.createdAt = '_id';
         }
         if (typeof options.updatedAt === 'string') {
            updatedAt = options.updatedAt;
