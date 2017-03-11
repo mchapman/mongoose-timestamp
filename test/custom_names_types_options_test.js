@@ -51,7 +51,7 @@ describe('timestamps custom names and types with options', function() {
 		});
 	});
 
-	it('should create an elastic search index when passed es_indexed = true', function(done) {
+	xit('should create an elastic search index when passed es_indexed = true', function(done) {
 		var checkElastic = function() {
 			request({
 				url: 'http://127.0.0.1:9200/customizedtypeoptionstimecops',
