@@ -62,12 +62,14 @@ function timestampsPlugin(schema, options) {
               });
         }
         schema.pre('save', function(next) {
-            if (this.isNew) {
-                var newDate = new Date;
-                if (createdAt && createdAt !== '_id') this[createdAt] = newDate;
-                if (updatedAt) this[updatedAt] = newDate;
-            } else if (this.isModified() && updatedAt) {
-                this[updatedAt] = new Date;
+            if (!this._noTimestampUpdates) {
+                if (this.isNew) {
+                    var newDate = new Date;
+                    if (createdAt && createdAt !== '_id') this[createdAt] = newDate;
+                    if (updatedAt) this[updatedAt] = newDate;
+                } else if (this.isModified() && updatedAt) {
+                    this[updatedAt] = new Date;
+                }
             }
             next();
         });
@@ -80,19 +82,21 @@ function timestampsPlugin(schema, options) {
             schema.add(dataObj);
         }
         schema.pre('save', function(next) {
-            if (!this[createdAt]) {
-                var newDate = new Date;
-                if (createdAt) this[createdAt] = newDate;
-                if (updatedAt) this[updatedAt] = newDate;
-            } else if (this.isModified() && updatedAt) {
-                this[updatedAt] = new Date;
+            if (!this._noTimestampUpdates) {
+                if (!this[createdAt]) {
+                    var newDate = new Date;
+                    if (createdAt) this[createdAt] = newDate;
+                    if (updatedAt) this[updatedAt] = newDate;
+                } else if (this.isModified() && updatedAt) {
+                    this[updatedAt] = new Date;
+                }
             }
             next();
         });
     }
 
     schema.pre('findOneAndUpdate', function(next) {
-    if (this.op === 'findOneAndUpdate') {
+    if (this.op === 'findOneAndUpdate' && (!this.options || !this.options.noTimestampUpdates)) {
         var newDate = new Date;
         this._update = this._update || {};
         if (createdAt && createdAt !== '_id') {
@@ -111,7 +115,7 @@ function timestampsPlugin(schema, options) {
     });
 
     schema.pre('update', function(next) {
-    if (this.op === 'update') {
+    if (this.op === 'update' && (!this.options || !this.options.noTimestampUpdates)) {
         var newDate = new Date;
         this._update = this._update || {};
         if (createdAt && createdAt !== '_id') {
