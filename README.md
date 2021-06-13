@@ -66,6 +66,7 @@ mongoose.plugin(timestamps,  {
 
 Any model's updatedAt attribute can be updated to the current time using `touch()`.
 
+
 ## License
 
 (The MIT License)
